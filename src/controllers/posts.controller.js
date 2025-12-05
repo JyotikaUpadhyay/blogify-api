@@ -7,7 +7,7 @@ const posts = [
 ];
 
 // GET /api/v1/posts → get all posts
-exports.getAllPosts = (req, res) => {
+const getAllPosts = (req, res) => {
   res.status(200).json({
     success: true,
     data: {
@@ -16,9 +16,7 @@ exports.getAllPosts = (req, res) => {
   });
 };
 
-
-// GET /api/v1/posts/:postId → dynamic route
-exports.getPostById = (req, res) => {
+const getPostById = (req, res) => {
   const { id } = req.params;
 
   res.status(200).json({
@@ -28,6 +26,7 @@ exports.getPostById = (req, res) => {
     }
   });
 };
+
 
 
 module.exports = {
