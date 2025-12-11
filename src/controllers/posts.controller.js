@@ -1,36 +1,44 @@
-// src/controllers/posts.controller.js
-
-// Temporary in-memory "database"
-const posts = [
-  { id: 1, title: 'First Post', content: 'This is the first post.' },
-  { id: 2, title: 'Second Post', content: 'This is the second post.' },
-];
-
-// GET /api/v1/posts → get all posts
+// GET /posts
 const getAllPosts = (req, res) => {
   res.status(200).json({
     success: true,
-    data: {
-      message: "All posts fetched successfully"
-    }
+    data: { message: "List of all posts" }
   });
 };
 
+// GET /posts/:id
 const getPostById = (req, res) => {
   const { id } = req.params;
 
   res.status(200).json({
     success: true,
+    data: { message: `Details of post ${id}` }
+  });
+};
+
+// POST /posts
+const createPost = (req, res) => {
+  const { title, content } = req.body;
+
+  if (!title) {
+    return res.status(400).json({
+      success: false,
+      error: "Title is required"
+    });
+  }
+
+  res.status(201).json({
+    success: true,
     data: {
-      postId: id
+      message: `Post created successfully`,
+      title,
+      content
     }
   });
 };
 
-
-
 module.exports = {
   getAllPosts,
   getPostById,
+  createPost
 };
-
