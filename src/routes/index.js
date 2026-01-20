@@ -1,10 +1,6 @@
-const express = require('express');
-const router = express.Router();
+const router = require("express").Router();
+const postRoutes = require("./post.routes");
 
-// Import resource router
-const postRouter = require('./post.routes');
-
-// Delegate routes
-router.use('/posts', postRouter);
+router.use("/api/v1/posts", postRoutes);
 
 module.exports = router;
