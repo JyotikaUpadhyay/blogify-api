@@ -1,19 +1,30 @@
+require("dotenv").config();
 const express = require("express");
-
-const postRoutes = require("./routes/post.routes");
-const authRoutes = require("./routes/auth.routes");
-const errorMiddleware = require("./middlewares/error.middleware");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const app = express();
 
-// middleware to parse JSON
+// If you use frontend later:
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+
 app.use(express.json());
+app.use(cookieParser()); // ✅ REQUIRED
 
-// routes
-app.use("/api/v1/posts", postRoutes);
-app.use("/api/v1/auth", authRoutes);
+// Routes
+const authRoutes = require("./routes/auth.routes");
+const postRoutes = require("./routes/post.routes");
 
-// global error handler
-app.use(errorMiddleware);
+app.use("/api/auth", authRoutes);
+app.use("/api/posts", postRoutes);
+
+app.get("/", (req, res) => {
+  res.send("✅ Blogify API running...");
+});
 
 module.exports = app;
