@@ -1,14 +1,36 @@
-const ApiError = require("../utils/ApiError");
+// src/middlewares/error.middleware.js
 
-module.exports = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
+const errorHandler = (err, req, res, next) => {
+  // Duplicate key error (E11000)
+  if (err.code === 11000) {
+    const field = Object.keys(err.keyPattern)[0];
+    const value = err.keyValue?.[field];
 
-  // If it's not an ApiError, hide internal details
-  const message =
-    err instanceof ApiError ? err.message : "Internal Server Error";
+    const message = `${field.charAt(0).toUpperCase() + field.slice(1)} '${value}' already exists. Please use a different ${field}.`;
 
-  res.status(statusCode).json({
+    return res.status(400).json({
+      success: false,
+      error: { message, field },
+    });
+  }
+
+  // Validation error
+  if (err.name === "ValidationError") {
+    const message = Object.values(err.errors)
+      .map((val) => val.message)
+      .join(", ");
+
+    return res.status(400).json({
+      success: false,
+      error: { message },
+    });
+  }
+
+  // Default error
+  return res.status(500).json({
     success: false,
-    message,
+    error: { message: err.message || "Server Error" },
   });
 };
+
+module.exports = errorHandler;
